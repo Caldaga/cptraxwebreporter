@@ -6,7 +6,7 @@
 	
 	// Get Data for Top 5 Active Directory Changes by Domain Controller (AD-BAR-1)
 	
-	$adBar1Query = "SELECT FromServer, Count(FromServer) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
+	$adBar1Query = "SELECT FromServer, Count(FromServer) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
 	$adBar1QueryResult = sqlsrv_query($conn, $adBar1Query);
 	if($adBar1QueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -17,7 +17,7 @@
 	
 	// Get Data for All User, Group, Computer Changes (Line Chart) (AD-LINE)
 	
-	$adLineGroupQuery = "select TimeOccurred = d.Date, Count(ObjectClass) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.ObjectClass like 'group' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$adLineGroupQuery = "select TimeOccurred = d.Date, Count(ObjectClass) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.ObjectClass like 'group' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$adLineGroupQueryResult = sqlsrv_query($conn, $adLineGroupQuery );
 	if($adLineGroupQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -26,7 +26,7 @@
 		  $adLineGroupQueryResults[] = $row;
 	}
 
-	$adLineUserQuery = "select TimeOccurred = d.Date, Count(ObjectClass) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.ObjectClass like 'user' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$adLineUserQuery = "select TimeOccurred = d.Date, Count(ObjectClass) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.ObjectClass like 'user' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$adLineUserQueryResult = sqlsrv_query($conn, $adLineUserQuery );
 	if($adLineUserQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -35,7 +35,7 @@
 		  $adLineUserQueryResults[] = $row;
 	}
 	
-	$adLineCompQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%add attribute%' and l.AttributeAffected like '%lockout%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0)) and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$adLineCompQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%add attribute%' and l.AttributeAffected like '%lockout%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0)) and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$adLineCompQueryResult = sqlsrv_query($conn, $adLineCompQuery );
 	if($adLineCompQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -93,7 +93,7 @@
 	
 	// Get Data for Group Changes Last 30 Days (Pie Chart) (AD-PIE)
 	
-	$adPieQueryGroupCreates = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where Action like '%create object%' AND ObjectClass like '%group%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$adPieQueryGroupCreates = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where Action like '%create object%' AND ObjectClass like '%group%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$adPieQueryGroupCreatesResult = sqlsrv_query($conn, $adPieQueryGroupCreates );
 	if($adPieQueryGroupCreatesResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -102,7 +102,7 @@
 		  $adPieQueryGroupCreatesResults[] = $row;
 	}
 	
-	$adPieQueryGroupDeletes = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where Action like '%delete object%' AND ObjectClass like '%group%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$adPieQueryGroupDeletes = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where Action like '%delete object%' AND ObjectClass like '%group%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$adPieQueryGroupDeletesResult = sqlsrv_query($conn, $adPieQueryGroupDeletes );
 	if($adPieQueryGroupDeletesResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -111,7 +111,7 @@
 		  $adPieQueryGroupDeletesResults[] = $row;
 	}
 	
-	$adPieQueryGroupMemAdd = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where Action like '%ad add attribute%' AND ObjectClass like '%group%' AND AttributeAffected like '%member%' AND AttributeAffected not like '%memberof%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$adPieQueryGroupMemAdd = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where Action like '%ad add attribute%' AND ObjectClass like '%group%' AND AttributeAffected like '%member%' AND AttributeAffected not like '%memberof%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$adPieQueryGroupMemAddResult = sqlsrv_query($conn, $adPieQueryGroupMemAdd);
 	if($adPieQueryGroupMemAddResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -120,7 +120,7 @@
 		  $adPieQueryGroupMemAddResults[] = $row;
 	}
 	
-	$adPieQueryGroupMemRem = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where Action like '%ad delete attribute%' AND ObjectClass like '%group%' AND AttributeAffected like '%member%' AND AttributeAffected not like '%memberof%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$adPieQueryGroupMemRem = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where Action like '%ad delete attribute%' AND ObjectClass like '%group%' AND AttributeAffected like '%member%' AND AttributeAffected not like '%memberof%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$adPieQueryGroupMemRemResult = sqlsrv_query($conn, $adPieQueryGroupMemRem );
 	if($adPieQueryGroupMemRemResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -133,7 +133,7 @@
 	
 	// Get Data for All File System Activity Last 30 Days (Line Chart) (Creates,Deletes,Renames/Moves,Permissions Changes) (FS-LINE)
 	
-	$fsLineCreateQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%create%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$fsLineCreateQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%create%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$fsLineCreateQueryResult = sqlsrv_query($conn, $fsLineCreateQuery );
 	if($fsLineCreateQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -142,7 +142,7 @@
 		  $fsLineCreateQueryResults[] = $row;
 	}
 
-	$fsLineDeleteQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%delete%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$fsLineDeleteQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%delete%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$fsLineDeleteQueryResult = sqlsrv_query($conn, $fsLineDeleteQuery );
 	if($fsLineDeleteQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -151,7 +151,7 @@
 		  $fsLineDeleteQueryResults[] = $row;
 	}
 	
-	$fsLineRenameQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%rename%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$fsLineRenameQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%rename%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$fsLineRenameQueryResult = sqlsrv_query($conn, $fsLineRenameQuery );
 	if($fsLineRenameQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -160,7 +160,7 @@
 		  $fsLineRenameQueryResults[] = $row;
 	}
 	
-	$fsLinePermQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%ACL%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$fsLinePermQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[File_System_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%ACL%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$fsLinePermQueryResult = sqlsrv_query($conn, $fsLinePermQuery );
 	if($fsLinePermQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -171,7 +171,7 @@
 	
 	// Get Data for Top 5 File System Users (Up Bar Chart) (FS-BAR-1)
 	
-	$fsBarTop5Query = "SELECT UserName, Count(UserName) FROM [CPTRAX_for_Windows].[dbo].[File_System_Profiles] WHERE UserName not like '%$%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
+	$fsBarTop5Query = "SELECT UserName, Count(UserName) FROM [Audit_Data].[dbo].[File_System_Profiles] WHERE UserName not like '%$%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
 	$fsBarTop5QueryResult = sqlsrv_query($conn, $fsBarTop5Query );
 	if($fsBarTop5QueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -182,7 +182,7 @@
 	
 	// Get Data for Top 5 File System Events per Server (Side Bar Chart) (FS-BAR-2)
 	
-	$fsHBarTop5Query = "SELECT FromServer, Count(FromServer) FROM [CPTRAX_for_Windows].[dbo].[File_System_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
+	$fsHBarTop5Query = "SELECT FromServer, Count(FromServer) FROM [Audit_Data].[dbo].[File_System_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
 	$fsHBarTop5QueryResult = sqlsrv_query($conn, $fsHBarTop5Query);
 	if($fsHBarTop5QueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -242,7 +242,7 @@
 	
 	// Get Data for Last 30 Days Authentications Line Chart
 	
-	$lineQueryFailedAuths = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%failed%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$lineQueryFailedAuths = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%failed%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$lineFailedAuthsQueryResult = sqlsrv_query($conn, $lineQueryFailedAuths );
 	if($lineFailedAuthsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -251,7 +251,7 @@
 		  $lineFailedAuthsResults[] = $row;
 	}
 
-	$lineQuerySuccAuths = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%logon (%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$lineQuerySuccAuths = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%logon (%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$lineSuccAuthsQueryResult = sqlsrv_query($conn, $lineQuerySuccAuths );
 	if($lineSuccAuthsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -260,7 +260,7 @@
 		  $lineSuccAuthsResults[] = $row;
 	}
 	
-	$lineQueryLockouts = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%add attribute%' and l.AttributeAffected like '%lockout%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0)) and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$lineQueryLockouts = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%add attribute%' and l.AttributeAffected like '%lockout%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0)) and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$lineLockoutsQueryResult = sqlsrv_query($conn, $lineQueryLockouts );
 	if($lineLockoutsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -271,7 +271,7 @@
 	
 	// Get Data for Top Authentication Bar Chart
 	
-	$barQueryAuths = "SELECT UserName, Count(UserName) FROM [CPTRAX_for_Windows].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE UserName not like '%$%' AND Action not like '%FAILED%' AND Action not like '%Logoff%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
+	$barQueryAuths = "SELECT UserName, Count(UserName) FROM [Audit_Data].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE UserName not like '%$%' AND Action not like '%FAILED%' AND Action not like '%Logoff%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
 	$barAuthsQueryResult = sqlsrv_query($conn, $barQueryAuths );
 	if($barAuthsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -282,7 +282,7 @@
 	
 	// Get Data for Top 5 Logon Failures for Last 30 Days (Side Bar Chart) (LL-BAR-2)
 	
-	$llHBarQuery = "SELECT UserName, Count(UserName) FROM [CPTRAX_for_Windows].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE UserName not like '%$%' AND Action like '%failed%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
+	$llHBarQuery = "SELECT UserName, Count(UserName) FROM [Audit_Data].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE UserName not like '%$%' AND Action like '%failed%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By UserName Order By Count(UserName) desc";
 	$llHBarQueryResult = sqlsrv_query($conn, $llHBarQuery );
 	if($llHBarQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -293,7 +293,7 @@
 	
 	// Get Data for Authentication Events by Server Last 30 Days (TOP 5) (Pie Chart) (LL-PIE)
 	
-	$llPieTop5Query = "SELECT FromServer, Count(FromServer) FROM [CPTRAX_for_Windows].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
+	$llPieTop5Query = "SELECT FromServer, Count(FromServer) FROM [Audit_Data].[dbo].[Logon_Logoff_and_Failed_Logon_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
 	$llPieTop5QueryResult = sqlsrv_query($conn, $llPieTop5Query );
 	if($llPieTop5QueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -306,7 +306,7 @@
 	
 	// Get Data for All GPO Changes for Last 30 Days (Line Chart) (GPO-LINE)
 	
-	$gpoLineCreateQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%create object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$gpoLineCreateQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%create object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$gpoLineCreateQueryResult = sqlsrv_query($conn, $gpoLineCreateQuery );
 	if($gpoLineCreateQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -315,7 +315,7 @@
 		  $gpoLineCreateQueryResults[] = $row;
 	}
 
-	$gpoLineDeleteQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%delete object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$gpoLineDeleteQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action like '%delete object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$gpoLineDeleteQueryResult = sqlsrv_query($conn, $gpoLineDeleteQuery );
 	if($adLineUserQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -324,7 +324,7 @@
 		  $gpoLineDeleteQueryResults[] = $row;
 	}
 	
-	$gpoLineLinkQuery = "select TimeOccurred = d.Date, Count(AttributeAffected) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.AttributeAffected like '%gplink%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$gpoLineLinkQuery = "select TimeOccurred = d.Date, Count(AttributeAffected) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.AttributeAffected like '%gplink%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$gpoLineLinkQueryResult = sqlsrv_query($conn, $gpoLineLinkQuery );
 	if($adLineCompQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -333,7 +333,7 @@
 		  $gpoLineLinkQueryResults[] = $row;
 	}
 	
-	$gpoLineModifyQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action not like '%create object%' and l.Action not like '%delete object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
+	$gpoLineModifyQuery = "select TimeOccurred = d.Date, Count(Action) from CPTRAX_DB_Dates d left join [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] l on d.Date = convert(date,l.TimeOccurred) and l.Action not like '%create object%' and l.Action not like '%delete object%' where d.Date >= dateadd(day, -30, dateadd(day, datediff(day, 0, getdate()), 0))  and d.Date <= dateadd(day, 0, getdate()) group by d.Date order by d.Date";
 	$gpoLineModifyQueryResult = sqlsrv_query($conn, $gpoLineModifyQuery );
 	if($gpoLineModifyQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -344,7 +344,7 @@
 	
 	// Get Data for GPO Events by DC (Up Bar Chart) (GPO-BAR-1)
 	
-	$gpoBarPerDCQuery = "SELECT FromServer, Count(FromServer) FROM [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
+	$gpoBarPerDCQuery = "SELECT FromServer, Count(FromServer) FROM [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By FromServer Order By Count(FromServer) desc";
 	$gpoBarPerDCQueryResult = sqlsrv_query($conn, $gpoBarPerDCQuery);
 	if($gpoBarPerDCQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -355,7 +355,7 @@
 	
 	// Get Data for GPO Events by User (Side Bar Chart) (GPO-BAR-2)
 	
-	$gpoBar2PerUserQuery = "SELECT PerformedByUserName, Count(PerformedByUserName) FROM [CPTRAX_for_Windows].[dbo].[GPO_Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By PerformedByUserName Order By Count(PerformedByUserName) desc";
+	$gpoBar2PerUserQuery = "SELECT PerformedByUserName, Count(PerformedByUserName) FROM [Audit_Data].[dbo].[GPO_Active_Directory_Profiles] WHERE (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE())) Group By PerformedByUserName Order By Count(PerformedByUserName) desc";
 	$gpoBar2PerUserQueryResult = sqlsrv_query($conn, $gpoBar2PerUserQuery);
 	if($gpoBar2PerUserQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -397,7 +397,7 @@
 		  $sumUnlockedResults[] = $row;
 	}
 	
-	$sumQueryPwdLastSet = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where AttributeAffected like '%pwdlastset%' AND Action like '%ad add attribute%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$sumQueryPwdLastSet = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where AttributeAffected like '%pwdlastset%' AND Action like '%ad add attribute%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$sumPwdLastSetQueryResult = sqlsrv_query($conn, $sumQueryPwdLastSet );
 	if($sumPwdLastSetQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -406,7 +406,7 @@
 		  $sumPwdLastSetResults[] = $row;
 	}
 	
-	$sumQueryUserMods = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%user%' AND Action not like '%object%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$sumQueryUserMods = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%user%' AND Action not like '%object%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$sumUserModsQueryResult = sqlsrv_query($conn, $sumQueryUserMods );
 	if($sumUserModsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -453,7 +453,7 @@
 		  $sumCompEnabledResults[] = $row;
 	}
 	
-	$sumQueryCompMods = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%Computer%' AND Action not like '%object%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
+	$sumQueryCompMods = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%Computer%' AND Action not like '%object%' AND (TimeOccurred >= DATEADD(DAY,-30,GETDATE()) AND TimeOccurred <= DATEADD(DAY,0,GETDATE()))";
 	$sumCompModsQueryResult = sqlsrv_query($conn, $sumQueryCompMods );
 	if($sumCompModsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
@@ -482,7 +482,7 @@
 		  $sumOUDeletedResults[] = $row;
 	}
 	
-	$sumQueryOUMods = "SELECT Count(Action) FROM [CPTRAX_for_Windows].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%organization%' AND Action not like '%object%'";
+	$sumQueryOUMods = "SELECT Count(Action) FROM [Audit_Data].[dbo].[Active_Directory_Profiles] Where ObjectClass like '%organization%' AND Action not like '%object%'";
 	$sumOUModsQueryResult = sqlsrv_query($conn, $sumQueryOUMods );
 	if($sumOUModsQueryResult === false){
 		die( print_r( sqlsrv_errors(), true));
