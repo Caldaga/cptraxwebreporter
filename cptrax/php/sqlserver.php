@@ -1,1 +1,1 @@
-<?php $server = "DEMOFS2016\SQLEXPRESS"; ?>
+<?php $server = "tcp:cptraxsql.database.windows.net,1433"; ?>
