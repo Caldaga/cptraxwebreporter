@@ -1,9 +1,5 @@
 <?php
 
-	//error_reporting(E_ALL);
-	//ini_set('display_errors', TRUE);
-	//ini_set('display_startup_errors', TRUE);
-
 	require 'sqlconnect.php';
 	
 	// Get Canned Report Name
@@ -64,15 +60,23 @@
 
 		for ( $x=0 ; $x<count($filterColumns) ; $x++ ) {
 			if ( $where == "" ) {
+				
 				$where = "WHERE ";
+				$where .= $filterColumns[$x]." ".$filterExpressions[$x]." '%".$filterValues[$x]."%'";
+				
 			}
-			elseif ( strpos($where, $filterColumns[$x]) == true) {
+			elseif ((strpos($where, $filterColumns[$x]) == true) && (strpos($filterExpressions[$x], 'not') == false)) {
 				$where .= " OR ";
+				$where .= $filterColumns[$x]." ".$filterExpressions[$x]." '%".$filterValues[$x]."%'";
 			}
 			else {
+				$where = substr($where, 6);
+				$where = "WHERE "."(".$where.")";
 				$where .= " AND ";
+				$where .= $filterColumns[$x]." ".$filterExpressions[$x]." '%".$filterValues[$x]."%'";
 			}
-			$where .= $filterColumns[$x]." ".$filterExpressions[$x]." '%".addslashes($filterValues[$x])."%'";
+			
+			
 		}
 	
 	}

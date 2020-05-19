@@ -23,7 +23,7 @@
 			} );
 			
 			var table = $('#myTable').DataTable( {
-				dom: 'Bfrti',
+				dom: 'Brti',
 				buttons: [
 					{	
 						extend: 'colvis',
@@ -56,25 +56,7 @@
 											}
 									});
 								}
-							}/*,
-							{
-								text: 'PDF',
-								action: function ( e, dt, node, config ) {
-									$.ajax({
-										"url": "../php/pdfqueryresults.php",
-										"type": "POST",
-										"data": table.ajax.params(),
-										"success": function(res, status, xhr) {
-											var pdfData = new Blob([res], {type: 'application/pdf'});
-											var pdfURL = window.URL.createObjectURL(pdfData);
-											var tempLink = document.createElement('a');
-											tempLink.href = pdfURL;
-											tempLink.setAttribute('download', '<?php echo $title.".pdf"; ?>');
-											tempLink.click();
-											}
-									});
-								}
-							}*/
+							}
 						]
 					}
 				],
@@ -106,15 +88,6 @@
 				<?php
 				echo "columns: [";
 				foreach ($selectColumns as $col) {
-					//if ($col == "TimeOccurred") {
-					//	$col = "TimeOccurred.date.";
-					//}
-					//if ($col == "LogonTime") {
-					//	$col = "LogonTime.date.";
-					//}
-					//if ($col == "LogoffTime") {
-					//	$col = "LogoffTime.date.";
-					//}
 					echo '{ "data": "'.$col.'" },';
 					unset($col);
 				}

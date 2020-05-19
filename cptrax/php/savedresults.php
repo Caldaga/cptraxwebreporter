@@ -2,20 +2,10 @@
 	<head>
 		<?php
 		
-		// Variables Handled
+		$savedReportName = $_GET['savedreportname'];
 		
-		$title = $_GET['title'];
-		$selectColumns = $_GET['selectedcolumns'];
-		$filterColumns = $_GET['filtercolumns'];
-		$filterExpressions = $_GET['filterexpressions'];
-		$filterValues = $_GET['filtervalues'];
-		$table = $_GET['table'];
-		$dateArray = explode(" ", $_GET['datefilter']);
-		$startDate = ($dateArray[0]." ".$dateArray[1]); 
-		$endDate = ($dateArray[3]." ".$dateArray[4]);
-		$lastXDays = $_GET['datefilter2'];
-		$lastXIncrem = $_GET['dateexpression'];
-		
+		include 'savedincludes.php';
+	
 		echo "<title>".$title."</title>"; 
 		
 		?>
@@ -36,7 +26,6 @@
 		<a href="https://www.visualclick.com" target="_blank">
 		<img src="../css/DataTables-1.10.15/images/vcs logo.png" alt="Visual Click Software, Inc" height="5%">
 		</a>
-
 		<?php echo "<p style=\"font-size:25px; padding-top: 20px;\"><strong>".$title."</strong></p>"; ?>
 	
 		<hr/>

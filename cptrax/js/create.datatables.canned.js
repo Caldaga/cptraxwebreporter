@@ -22,7 +22,7 @@
 			} );
 			
 			var table = $('#myTable').DataTable( {
-				dom: 'Bfrti',
+				dom: 'Brti',
 				buttons: [
 					{	
 						extend: 'colvis',

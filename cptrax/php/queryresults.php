@@ -59,16 +59,28 @@
 		return '0x' . $unpacked['hex'];
 	}
  
-/* Filtering - Global Search */
-	$where = "";
-	if ( isset($_POST['search']['value']) && $_POST['search']['value'] != "" ) {
-		$where = "WHERE (";
-		for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
-			$where .= $aColumns[$i]." LIKE '%".addslashes( $_POST['search']['value'] )."%' OR ";
+/* Add the custom query custom column filters */
+if ( isset($aFilColumns[0]) ) {
+		
+	for ( $x=0 ; $x<count($aFilColumns) ; $x++ ) {
+		if ( $where == "" ) {
+			
+			$where = "WHERE ";
+			$where .= $aFilColumns[$x]." ".$aFilExpressions[$x]." '%".$aFilValues[$x]."%'";
+			
 		}
-		$where = substr_replace( $where, "", -3 );
-		$where .= ')';
+		elseif ((strpos($where, $aFilColumns[$x]) == true) && (strpos($aFilExpressions[$x], 'NOT LIKE') === false)) {
+			$where .= " OR ";
+			$where .= $aFilColumns[$x]." ".$aFilExpressions[$x]." '%".$aFilValues[$x]."%'";
+		}
+		else {
+			$where = substr($where, 6);
+			$where = "WHERE "."(".$where.")";
+			$where .= " AND ";
+			$where .= $aFilColumns[$x]." ".$aFilExpressions[$x]." '%".$aFilValues[$x]."%'";
+		}
 	}
+}
 	
 /* Individual column filtering */
 	for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
@@ -78,9 +90,12 @@
 					$where = "WHERE ";
 				}
 				else {
+					$where = substr($where, 6);
+					$where = "WHERE "."(".$where.")";
 					$where .= " AND ";
 				}
 				$where .= $aColumns[$i]." LIKE '%".$_POST['columns'][$i]['search']['value']."%' ";
+				
 			}
 			else {
 			
@@ -97,21 +112,6 @@
 			
 			}
 		}
-	}
-	
-/* Add the custom query custom column filters */
-
-	for ( $x=0 ; $x<count($aFilColumns) ; $x++ ) {
-		if ( $where == "" ) {
-			$where = "WHERE ";
-		}
-		elseif ((strpos($where, $aFilColumns[$x]) == true) && (strpos($aFilExpressions[$x], 'not') == true)) {
-			$where .= " OR ";
-		}
-		else {
-			$where .= " AND ";
-		}
-		$where .= $aFilColumns[$x]." ".$aFilExpressions[$x]." '%".$aFilValues[$x]."%'";
 	}
 	
 /* Add the custom Date/Time filter */

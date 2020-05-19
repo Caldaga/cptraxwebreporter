@@ -29,4 +29,21 @@
 .sumtableheader {
 	font-size: 20;
 	background: #aeb3ba;
+	border-collapse: collapse;
+}
+
+tr.sumtableheader {
+	cursor: pointer;
+}
+
+table,
+tr,
+td,
+th {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+tr.header {
+  cursor: pointer;
 }
